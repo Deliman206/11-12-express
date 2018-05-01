@@ -31,4 +31,4 @@ const stopServer = () => {
     });
 };
 
-export { startServer, stopServer };
+export default { startServer, stopServer };

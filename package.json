@@ -8,6 +8,11 @@
     "dbon": "mkdir -p ./db && mongod --dbpath ./db",
     "dboff": "killall mongod"
   },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/src/__test__/lib/test.env.js"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Deliman206/11-12-express.git"
