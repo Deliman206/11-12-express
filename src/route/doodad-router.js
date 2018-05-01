@@ -53,11 +53,11 @@ doodadRouter.get('/api/doodad', (request, response) => {
       return response.sendStatus(500);
     });
 });
-doodadRouter.get('/api/doodad/:id', (request, response) => {
+doodadRouter.get('/api/doodad/:id?', (request, response) => {
   logger.log(logger.INFO, 'GET: Processing a request');
   if (!request.params.id) {
     logger.log(logger.INFO, 'GET: Responding with 417 Status No Id given');
-    return response.status(417);
+    return response.sendStatus(417);
   }
   return Doodad.findById(request.params.id)
     .then((doodad) => {
@@ -79,20 +79,20 @@ doodadRouter.get('/api/doodad/:id', (request, response) => {
       return response.sendStatus(500);
     });
 });
-doodadRouter.delete('/api/doodad/delete/:id', (request, response) => {
+doodadRouter.delete('/api/doodad/:id?', (request, response) => {
   logger.log(logger.INFO, 'DELETE: Processing Request');
   if (!request.params.id) {
     logger.log(logger.INFO, 'GET: Responding with 417 Status No Id given');
-    return response.status(417);
+    return response.sendStatus(417);
   }
-  return Doodad.response.findOneAndDelete(request.params.id)
+  return Doodad.findByIdAndRemove(request.params.id)
     .then((doodad) => {
       if (!doodad) {
         logger.log(logger.INFO, 'DELETE - responding with a 404 status code - (!doodad');
         return response.sendStatus(404);
       }
       logger.log(logger.INFO, 'DELETE: Responding with 204 status code');
-      return response.status(204);
+      return response.sendStatus(204);
     })
     .catch((error) => {
       if (error.message.toLowerCase().indexOf('cast to objectid failed') > -1) {
