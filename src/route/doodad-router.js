@@ -13,11 +13,11 @@ doodadRouter.post('/api/doodad', jsonParser, (request, response) => {
   logger.log(logger.INFO, 'POST: Processing a request to /api/doodad');
   if (!request.body.name) {
     logger.log(logger.INFO, 'POST: Responding with 417 Status No Name Given');
-    return response.status(417);
+    return response.sendStatus(417);
   }
   if (!request.body.size) {
     logger.log(logger.INFO, 'POST: Responding with 417 Status No Size Given');
-    return response.status(417);
+    return response.sendStatus(417);
   }
   return new Doodad(request.body).save()
     .then((doodad) => {
@@ -34,18 +34,18 @@ doodadRouter.post('/api/doodad', jsonParser, (request, response) => {
 doodadRouter.get('/api/doodad', (request, response) => {
   logger.log(logger.INFO, 'GET: Processing a request');
 
-  return Doodad.collection.find()
+  return Doodad.find()
     .then((collection) => {
       if (!collection) {
-        logger.log(logger.INFO, 'GET - responding with a 404 status code - No Collection');
+        logger.log(logger.INFO, 'GET - responding with a 404 status code - No response');
         return response.sendStatus(404);
       }
       logger.log(logger.INFO, 'GET - responding with a 200 status code');
       return response.json(collection);
     })
     .catch((error) => {
-      if (error.message.toLowerCase().indexOf('cast to collection failed') > -1) {
-        logger.log(logger.INFO, 'GET - responding with a 404 status code - collection not found');
+      if (error.message.toLowerCase().indexOf('cast to response failed') > -1) {
+        logger.log(logger.INFO, 'GET - responding with a 404 status code - response not found');
         return response.sendStatus(404);
       }
       logger.log(logger.ERROR, '__GET_ERROR__ Returning a 500 status code');
@@ -85,7 +85,7 @@ doodadRouter.delete('/api/doodad/delete/:id', (request, response) => {
     logger.log(logger.INFO, 'GET: Responding with 417 Status No Id given');
     return response.status(417);
   }
-  return Doodad.collection.findOneAndDelete(request.params.id)
+  return Doodad.response.findOneAndDelete(request.params.id)
     .then((doodad) => {
       if (!doodad) {
         logger.log(logger.INFO, 'DELETE - responding with a 404 status code - (!doodad');

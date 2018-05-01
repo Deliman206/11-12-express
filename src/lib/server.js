@@ -16,6 +16,7 @@ app.all('*', (request, response) => {
 const startServer = () => {
   return mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
+      console.log(process.env.MONGODB_URI, process.env.PORT, 'checking MONGODB URI and PORT');
       server = app.listen(process.env.PORT, () => {
         logger.log(logger.INFO, `Server is listening on port ${process.env.PORT}`);
       });
@@ -31,4 +32,4 @@ const stopServer = () => {
     });
 };
 
-export default { startServer, stopServer };
+export { startServer, stopServer };
