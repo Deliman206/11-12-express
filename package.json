@@ -4,7 +4,7 @@
   "description": "![cf](https://i.imgur.com/7v5ASc8.png) 11: Single Resource Express API ======",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage --forceExit",
+    "test": "jest --coverage --forceExit --runInBand",
     "dbon": "mkdir -p ./db && mongod --dbpath ./db",
     "dboff": "killall mongod"
   },
@@ -41,6 +41,7 @@
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "faker": "^4.1.0",
+    "http-error": "0.0.6",
     "mongoose": "^5.0.17",
     "winston": "^3.0.0-rc5"
   }
