@@ -114,7 +114,7 @@ describe('Routes for /api/doodad', () => {
         });
     });
   });
-  describe('DELETE /api/doodad/delete/:id', () => {
+  describe('DELETE /api/doodad/:id', () => {
     test('Should get 417 error code because no query Id', () => {
       return superagent.delete(`${apiURL}`)
         .then(() => {})
@@ -123,12 +123,12 @@ describe('Routes for /api/doodad', () => {
         });
     });
     test('Should get 404 error code because no Match Id', () => {
-      return superagent.delete(`${apiURL}/BadId`)
+      return superagent.delete(`${apiURL}/1234`)
         .then(() => {})
         .catch((error) => {
           expect(error.status).toEqual(404);
         });
-    }); 
+    });
     test('Should get 204 status code for successful deletion', () => {
       // let doodadToTest = null;       
       return createDoodadMock()
