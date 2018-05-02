@@ -2,9 +2,9 @@
 
 import { Router } from 'express';
 import bodyParser from 'body-parser';
+import HttpErrors from 'http-error';
 import Doodad from '../model/doodad';
 import logger from '../lib/logger';
-import HttpErrors from 'http-error';
 
 const jsonParser = bodyParser.json();
 
@@ -40,64 +40,37 @@ doodadRouter.get('/api/doodad', (request, response, next) => {
       logger.log(logger.INFO, 'GET - responding with a 200 status code');
       return response.json(collection);
     })
-    .catch((error) => {
-      if (error.message.toLowerCase().indexOf('cast to response failed') > -1) {
-        logger.log(logger.INFO, 'GET - responding with a 404 status code - response not found');
-        return response.sendStatus(404);
-      }
-      logger.log(logger.ERROR, '__GET_ERROR__ Returning a 500 status code');
-      logger.log(logger.ERROR, error);
-      return response.sendStatus(500);
-    });
+    .catch(next);
 });
 doodadRouter.get('/api/doodad/:id?', (request, response, next) => {
   logger.log(logger.INFO, 'GET: Processing a request');
   if (!request.params.id) {
     logger.log(logger.INFO, 'GET: Responding with 417 Status No Id given');
     return next(new HttpErrors(417, 'No Id for query'));
-    
   }
   return Doodad.findById(request.params.id)
     .then((doodad) => {
       if (!doodad) {
         logger.log(logger.INFO, 'GET - responding with a 404 status code - (!doodad');
-        return response.sendStatus(404);
+        return next(new HttpErrors(404, 'No doodad found'));
       }
       logger.log(logger.INFO, 'GET - responding with a 200 status code');
       return response.json(doodad);
     })
-    .catch((error) => {
-      if (error.message.toLowerCase().indexOf('cast to objectid failed') > -1) {
-        logger.log(logger.INFO, 'GET - responding with a 404 status code - objectId');
-        logger.log(logger.VERBOSE, `Could not parse the specific object id ${request.params.id}`);
-        return response.sendStatus(404);
-      }
-      logger.log(logger.ERROR, '__GET_ERROR__ Returning a 500 status code');
-      logger.log(logger.ERROR, error);
-      return response.sendStatus(500);
-    });
+    .catch(next);
 });
-doodadRouter.delete('/api/doodad/:id?', (request, response) => {
+doodadRouter.delete('/api/doodad/:id?', (request, response, next) => {
   logger.log(logger.INFO, 'DELETE: Processing Request');
   if (!request.params.id) {
     logger.log(logger.INFO, 'GET: Responding with 417 Status No Id given');
-    return response.sendStatus(417);
+    return next(new HttpErrors(417, 'No doodad found'));    
   }
   return Doodad.findByIdAndRemove(request.params.id)
     .then(() => {
       logger.log(logger.INFO, 'DELETE: Responding with 204 status code');
       return response.sendStatus(204);
     })
-    .catch((error) => {
-      if (error.message.toLowerCase().indexOf('cast to objectid failed') > -1) {
-        logger.log(logger.INFO, 'DELETE - responding with a 404 status code - objectId');
-        logger.log(logger.VERBOSE, `Could not parse the specific object id ${request.params.id}`);
-        return response.sendStatus(404);
-      }
-      logger.log(logger.ERROR, '__DELETE_ERROR__ Returning a 500 status code');
-      logger.log(logger.ERROR, error);
-      return response.sendStatus(500);
-    });
+    .catch(next);
 });
 
 export default doodadRouter;
